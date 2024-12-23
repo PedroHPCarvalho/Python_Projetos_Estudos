@@ -9,51 +9,19 @@
 # Validação para que apenas carros disponíveis sejam alugados.
 # Um método para calcular o valor do aluguel com base no número de dias.
 
-class CarroCadastrado:
-  def __init__(self,/,status_disponivel=True,*,modelo,ano,quilometragem):
-    self.modelo = modelo
-    self.ano = ano
-    self.quilometragem = quilometragem
-    self.status_disponivel = status_disponivel
+from class_ClienteCad import ClienteCadastrado
+from class_CarroCad import CarroCadastrado
+from funcoes_apoio import criar_carros
 
-  def __str__(self):
-    return f"Carro Cadastrado: {self.modelo} ({self.ano}) - {'Disponivel' if self.status_disponivel else 'Alugado'}"
-  
-  def __repr__(self):
-    return self.__str__()
-    
-  def alugarCarro(self):
-    self.status_disponivel = False
+criar_carros()
 
-  def retornarCarro(self):
-    self.status_disponivel = True
-
-  def retornar_status(self):
-    return self.status_disponivel
-
-class ClienteCadastrado:
-  def __init__(self,*,nome,documento):
-    self.nome = nome
-    self.documento = documento
-
-  def __str__(self):
-    return f"Cliente Cadastrado: {self.nome} Doc: {self.documento}"
-  
-  def __repr__(self):
-    return self.__str__
-
-  def retornar_nome(self):
-    return self.nome
-  
-  def retornar_documento(self):
-    return self.documento
-  
 class LocadoraVeiculos:
   def __init__(self):
     self.lista_carros=[]
     self.lista_clientes=[] 
 
   def menu(self):
+  
     menu = """ 
   ---------MENU OPÇÕES---------
   0 - LISTAR CATALOGO
@@ -69,18 +37,26 @@ class LocadoraVeiculos:
       match opcao_selecionada:
           case 0:
             self.listar_catalogo()
+            self.retornar_menu()
           case 1:
             self.alugar_carro()
           case 2:
             self.devolver_carro()
           case 3:
             self.cadastrar_cliente()
+            self.retornar_menu()
           case 4:
             self.listar_clientes()
+            self.retornar_menu()
+          case _:
+            self.menu()
 
     except ValueError:
       print("Numero informado não reconhecido")
-      self.menu()
+      self.retornar_menu()
+
+  def retornar_menu(self):
+    self.menu()
 
   def adicionar_carros(self,obj_carro):
     self.lista_carros.append(obj_carro)
@@ -90,19 +66,26 @@ class LocadoraVeiculos:
     print()
     for indice,carro in enumerate(self.lista_carros):
       print(f"{indice} : {carro}")
-    self.menu()
 
   def alugar_carro(self):
-    try:
-      indice_selecionado = int(input(f"Informe o numero do carro escolhido para ALUGAR: \n"))
-      carro_selecionado = self.lista_carros[indice_selecionado]
-      carro_selecionado.alugarCarro()
-      print(f"O Seguinte carro foi Alugado \nModelo: {carro_selecionado.modelo} \nAno: {carro_selecionado.ano}")
-      self.menu()
-    except ValueError:
-      print("Informe o INDICE DO CARRO CORRETAMENTE")
-      self.alugar_carro()
+      try:
+        indice_selecionado_carro = int(input(f"Informe o numero do carro escolhido para ALUGAR: \n"))
+        carro_selecionado = self.lista_carros[indice_selecionado_carro]
+        self.listar_clientes()
+        indice_selecionado_cliente = int(input(f"Informe o indice do cliente"))
+        try:
+          cliente_selecionado = self.lista_clientes[indice_selecionado_cliente]
+        except IndexError:
+          print("Cliente não existente ou Não encontrado, cadastre ou consulte os cadastros")
+          self.retornar_menu()
+        carro_selecionado.alugarCarro()
+        print(f"O Seguinte carro foi Alugado \nModelo: {carro_selecionado.modelo} \nAno: {carro_selecionado.ano} \npara o cliente {cliente_selecionado.retornar_nome()}")
+      except ValueError:
+        print("Informe o INDICE DO CARRO CORRETAMENTE")
+        self.alugar_carro()
 
+      self.retornar_menu()
+      
   def devolver_carro(self):
     indice_selecionado = int(input(f"Informe o numero do carro escolhido para DEVOLVER: \n"))
     carro_selecionado = self.lista_carros[indice_selecionado]
@@ -131,20 +114,7 @@ class LocadoraVeiculos:
     print("Clientes Atuais")
     for indice, cliente in enumerate(self.lista_clientes):
       print(f"{indice}: {cliente}")
-    self.menu()
-
-def criar_carros():
-    carros = []
-
-    modelos = ["Argo", "Onix", "HB20", "Gol", "Civic", "Corolla", "Ka", "Polo", "Fusion", "Fit"]
-    quilometragens = [29000, 35000, 41000, 18000, 23000, 50000, 32000, 15000, 27000, 39000]
-    anos = [2021, 2020, 2022, 2019, 2018, 2020, 2021, 2017, 2022, 2019]
-
-    for i in range(10):
-        carro = CarroCadastrado(modelo=modelos[i], quilometragem=quilometragens[i], ano=anos[i])
-        carros.append(carro)
-
-    return carros
+    
 
 lc = LocadoraVeiculos()
 lista_base = criar_carros()
@@ -152,6 +122,7 @@ for carro in lista_base:
   lc.adicionar_carros(carro)
 
 lc.menu()
+
 
 
 
