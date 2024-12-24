@@ -81,8 +81,8 @@ class LocadoraVeiculos:
           print("Cliente não existente ou Não encontrado, cadastre ou consulte os cadastros")
           self.retornar_menu()
         carro_selecionado.alugarCarro()
-        relat.relatorio_gerar()
         print(f"O Seguinte carro foi Alugado \nModelo: {carro_selecionado.modelo} \nAno: {carro_selecionado.ano} \npara o cliente {cliente_selecionado.retornar_nome()}")
+        relat.relatorio_gerar(cliente_selecionado.retornar_nome(),carro_selecionado.modelo)
       except ValueError:
         print("Informe o INDICE DO CARRO CORRETAMENTE")
         self.alugar_carro()
