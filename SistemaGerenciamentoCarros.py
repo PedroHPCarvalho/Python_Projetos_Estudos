@@ -12,6 +12,7 @@
 from class_ClienteCad import ClienteCadastrado
 from class_CarroCad import CarroCadastrado
 from funcoes_apoio import criar_carros
+from class_relatorio import Relatorio
 
 criar_carros()
 
@@ -68,6 +69,7 @@ class LocadoraVeiculos:
       print(f"{indice} : {carro}")
 
   def alugar_carro(self):
+      relat = Relatorio()
       try:
         indice_selecionado_carro = int(input(f"Informe o numero do carro escolhido para ALUGAR: \n"))
         carro_selecionado = self.lista_carros[indice_selecionado_carro]
@@ -79,6 +81,7 @@ class LocadoraVeiculos:
           print("Cliente não existente ou Não encontrado, cadastre ou consulte os cadastros")
           self.retornar_menu()
         carro_selecionado.alugarCarro()
+        relat.relatorio_gerar()
         print(f"O Seguinte carro foi Alugado \nModelo: {carro_selecionado.modelo} \nAno: {carro_selecionado.ano} \npara o cliente {cliente_selecionado.retornar_nome()}")
       except ValueError:
         print("Informe o INDICE DO CARRO CORRETAMENTE")
@@ -115,6 +118,8 @@ class LocadoraVeiculos:
     for indice, cliente in enumerate(self.lista_clientes):
       print(f"{indice}: {cliente}")
     
+  
+
 
 lc = LocadoraVeiculos()
 lista_base = criar_carros()
